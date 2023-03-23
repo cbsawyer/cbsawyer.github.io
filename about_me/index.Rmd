@@ -13,6 +13,12 @@ My favorite things are to cry and pretend I'm sad
 
 See, I can make **bold test** cause I'm a big kid now.
 
+ I can be very professional, but I more prefer to be dumb, and happy instead, with complete disregard of myself. 
+ I laugh loudly, I make terrible jokes, and those two facts themselves are an awful pairing that only begins to dip into the mess that I am.
+
+I'm doing the best to pretend that r markdown and knittr isn't just smart-peoples' "MySpace". But my best isn't enough. I'm gonna try and find a way to play music when you navigate to this page. If there is one.
+
+
 ```{r}
 knitr::include_graphics("../media/me.jpg")
 ```
