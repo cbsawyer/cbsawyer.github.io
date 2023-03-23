@@ -8,10 +8,20 @@ date: "2023-03-23"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-## Under Construction
+### Under Construction
+
+```{r}
+dir.create("notes_rmarkdown")
+```
 
 
-A list of my projects will go here soon!
+## A list of my projects will go here soon!
+
+## Assignments
+# [Assignment_9](http://cbsawyer.github.io/Assignment_9)
+
+## Exams
+# [Final Project](http://cbsawyer.github.io/)
 
 Coding stuff: (mpg dataset)
 ```{r}
@@ -37,6 +47,8 @@ ggplotly(p)
 
 ```
 
-The mean cty miles per gallon is `r round(mean(mpg$cty),2)` in this data set
+
+
+
 
 
