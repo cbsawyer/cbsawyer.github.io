@@ -11,15 +11,17 @@ knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message= FALSE)
 Thank you.
 
 <body style="background-color:#5B222D" >
-<text style="color:white">
 
+<head>
+  <style>
+    p {
+      color: white;
+    }
 ```{r}
-dir.create("projects")
 ```
 
 ### [About Me](http://cbsawyer.github.io/about_me) |
 ### [Projects](http://cbsawyer.github.io/projects) |
-
 
 ```{bash, include=FALSE}
 git add .
