@@ -10,13 +10,8 @@ knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message= FALSE)
 #### Please turn around and leave the way you came.
 Thank you.
 
-<body style="background-color:#5B222D" >
+<body style="background-color:#DED2D5" >
 
-<head>
-  <style>
-    p {
-      color: white;
-    }
 ```{r}
 ```
 
