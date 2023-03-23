@@ -1,7 +1,7 @@
 ---
 output: html_document
 ---
-
+<body style="background-color:#CDB79E" >
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
