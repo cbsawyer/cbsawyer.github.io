@@ -17,7 +17,7 @@ dir.create("projects")
 ## [Projects](http://cbsawyer.gitbut.io/projects) |
 
 
-```{bash}
+```{bash, include=FALSE}
 git add .
 git commit -m "autobashupdate"
 git push
