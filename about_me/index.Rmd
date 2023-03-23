@@ -1,0 +1,22 @@
+---
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+### Hi, my name is Caleb Sawyer, and I live in Provo, Utah. 
+
+My favorite things are to cry and pretend I'm sad
+
+See, I can make **bold test** cause I'm a big kid now.
+
+```{r}
+knitr::include_graphics("../media/me.jpg")
+```
+
+
+Here is [my CV](http://cbsawyer.github.io/media/CV.pdf)
+
