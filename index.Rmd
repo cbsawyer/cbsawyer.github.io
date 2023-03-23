@@ -18,4 +18,10 @@ dir.create("projects")
 ## [Projects](http://cbsawyer.gitbut.io/projects) |
 
 
-   
+```{bash}
+git add .
+git commit -m "autobashupdate"
+git push
+
+git config --global user.email "caleb.sawyer.biz@gmail.com"
+```
