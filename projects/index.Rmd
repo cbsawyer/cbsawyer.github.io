@@ -20,7 +20,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ### [Assignment_9](http://cbsawyer.github.io/Assignment_9)
 
 # Exams
-### [Final Project](http://cbsawyer.github.io/)
+### [Final Project](http://cbsawyer.github.io/final_project)
 
 Coding stuff: (mpg dataset)
 ```{r}
