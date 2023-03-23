@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message= FALSE)
 #### Please turn around and leave the way you came.
 Thank you.
 
-<body style="background-color:blue" >
+<body style="background-color:#353739" >
 ```{r}
 dir.create("projects")
 ```
