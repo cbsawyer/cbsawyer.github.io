@@ -12,3 +12,31 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 A list of my projects will go here soon!
+
+Coding stuff: (mpg dataset)
+```{r}
+library(tidyverse)
+library(kableExtra)
+library(plotly)
+
+mpg %>% 
+  kable() %>% 
+  kable_classic(lightable_options = 'hover') %>% 
+  scroll_box(width="500px", height= "200px")
+
+# Well worth learning for table stuff!
+
+p <- mpg %>% 
+  ggplot(aes(x=displ,y=cty)) +
+  geom_point()+
+  geom_smooth()
+
+ggplotly(p)
+
+
+
+```
+
+The mean cty miles per gallon is `r round(mean(mpg$cty),2)` in this data set
+
+
