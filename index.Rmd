@@ -14,7 +14,7 @@ dir.create("projects")
 ```
 
 ### [About Me](http://cbsawyer.github.io/about_me) |
-### [Projects](http://cbsawyer.gitbut.io/projects) |
+### [Projects](http://cbsawyer.github.io/projects) |
 
 
 ```{bash, include=FALSE}
