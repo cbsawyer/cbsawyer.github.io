@@ -18,5 +18,6 @@ knitr::include_graphics("../media/me.jpg")
 ```
 
 
-Here is [my CV](http://cbsawyer.github.io/media/CV.pdf)
+Here is [My CV](http://cbsawyer.github.io/media/cv.pdf)
+And [My Resume](http://cbsawyer.github.io/media/Resume.pdf)
 
