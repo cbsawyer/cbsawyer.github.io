@@ -1,4 +1,5 @@
 ---
+title: "Home"
 output: html_document
 ---
 
@@ -6,12 +7,15 @@ output: html_document
 knitr::opts_chunk$set(echo = FALSE, warning= FALSE, message= FALSE)
 ```
 
-Here's my website
+### Welcome to Caleb's Github.io webpage.
+## Here we go!
 
 ```{r}
 dir.create("projects")
 ```
 
 ## [About Me](http://cbsawyer.github.io/about_me) |
-   [Projects](http://cbsawyer.gitbut.io/projects) |
+## [Projects](http://cbsawyer.gitbut.io/projects) |
+
+
    
