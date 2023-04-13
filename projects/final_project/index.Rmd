@@ -4,7 +4,255 @@ output: html_document
 ---
 <body style="background-color:#CDB79E" >
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 ```
 
 ## Welcome to the final project page! 
+
+Caleb Sawyer <br> BIOL-3100 <br> Introduction to Data Analysis
+
+[Background story here]
+
+
+### Prep Step
+Load libraries
+```{r,message=FALSE}
+library(tidyverse)
+library(janitor)
+library(bio3d)
+library(BiocManager)
+library(phangorn)
+library(kableExtra)
+
+#BiocManager::install("msa")
+```
+
+***
+
+### Step 1 
+#### Read in the data
+
+```{r,message=FALSE} 
+df <- 
+  read_csv("./taxa_list_new_csv.csv") %>% 
+  clean_names()
+```
+
+***
+
+### Step 2 
+#### Clean Up the data
+
+```{r, message=FALSE}
+
+#duplicate fasta format name column and manipulate one
+df$taxa <- 
+  gsub("> ",">",df$taxa)
+
+df$taxa_name_fasta=df$taxa
+
+#The "\xa0" is a stand in for the ? square box "replacement" character
+df$full_name <- 
+  gsub("\xa0"," ",df$full_name)
+
+df$gene <- 
+  gsub("\xa0"," ",df$gene)
+
+df$taxa <- 
+  gsub("[()]","",df$taxa)
+
+df$taxa <- 
+  df$taxa %>%
+  str_remove(">") 
+
+df <- 
+  separate(df,col=taxa,into = c("taxa_genus","sig_type"),sep=' ',convert=FALSE)
+
+df$sig_type <- as.factor(df$sig_type)
+
+df %>% 
+  kable() %>% 
+  kable_material_dark(lightable_options = 'hover') %>% 
+  scroll_box(width="900px", height= "350px")
+
+
+```
+
+***
+## Step 3
+### FASTA importing from list of GenBank numbers
+
+Get the compiled AA fasta file
+
+```{r, eval=FALSE}
+# - file manipulation
+get.seq(df$cox1_genbank,"cox1_all.fasta")
+```
+
+```{r}
+fst <- 
+  read.fasta("./cox1_all.fasta")
+```
+Viewing in Notepad, looks good!
+
+***
+## Step 4
+### align with msa
+
+```{r, eval=FALSE}
+# - file manipulation
+seqaln(fst, id=df$taxa_genus, exefile="msa",
+       outfile="align1.fasta", protein=TRUE, seqgroup=FALSE,
+       refine=FALSE, verbose=FALSE)
+```
+
+File made: "align1.fasta"
+
+Now it's aligned in that fasta
+Now I need to get it into Phydat format for analysis
+
+```{r}
+cox1 <- read.phyDat("./align1.fasta",
+                    format = "fasta",
+                    type = "AA")
+
+class(cox1)
+```
+
+***
+
+## Step 5 <br>
+### Model test for best fit
+<br>
+Model test to see which model best fits the data to use for phylogeny
+
+
+```{r, eval=FALSE}
+# runtime ~ 2 hr
+# - file manipulation
+mod <- modelTest(cox1)
+
+write.csv(mod,file="model_test_cox1.csv",quote=FALSE,col.names=TRUE)
+
+```
+
+File made: "model_test_cox1.csv"
+
+```{r}
+mod <- 
+  read_csv("./model_test_cox1.csv")
+
+mod %>% 
+  kable() %>% 
+  kable_material_dark(lightable_options = 'hover') %>% 
+  scroll_box(width="900px", height= "350px")
+```
+
+<br>
+### Picking a model
+
+I want the model that has the best value for both BIC and AIC overall. 
+so I'm going to sum them, divide by 2, and choose the lowest value
+^ What this dumbass means to say is the minimum average. 
+
+```{r}
+mod$fit <- ((mod$BIC+mod$AIC)/2)
+
+#Show best model based on min value of that new column
+c(as.character(mod[mod$fit == min(mod$fit),2]),as.character(min(mod$fit)))
+
+```
+
+### Best model: LG+G(4) with a value of "52175"
+
+(Note for me: maybe thinking about making that a cute function)
+***
+## Step 7. ###
+###Make the ML tree(s)
+-I've got the model to calculate the ML 
+-I've got the algined fasta
+
+...so its time to grow a tree.
+
+```{r, eval=FALSE}
+# - Runtime ~ 1 hr 15min
+# - file manipulation
+fitLG <- pml_bb(cox1, model="LG+G(4)")
+
+saveRDS(fitLG, file="fitlg.rds")
+
+```
+
+File created: "fitlg.rds"
+
+First Maximum Likelihood tree generated.
+
+### Here, there's something I want to look into: bootstrapping.
+
+The default option for pml gen is "UltraFast bootstrapping" [cite], but I only really know the context around standard bootstrapping. So, since I found how to do both, why not compare bootstrap values?
+
+
+Link this: Ultrafast bootstrapping: "https://academic.oup.com/mbe/article/30/5/1188/997508"
+
+
+
+```{r,message=FALSE}
+fitLG <- 
+  read_rds("fitlg.rds")
+
+#looking into the pml generation, and it looks like they default to "ultrafast
+#bootstrapping", which is pretty complicated. so I thought I'd compare
+#the bs values from a standard 100bs value I know to the UF bootstrap values.
+
+
+####### runtime ~ 1 hr
+## Setting up standard bootstrapping
+# bs <- bootstrap.pml(fitLG, bs=100, optNni=TRUE,
+#                     control = pml.control(trace = 0))
+# 
+# saveRDS(bs, file="bs.rds")
+####### - file manipulation
+
+bs <- 
+  read_rds("bs.rds")
+
+### Step 8. ###
+#plotting ultrafast BS vs standard BS to compare:
+#First step is ALWAYS: "Root your tree"
+#In this case: Archaea
+#Root
+root <- 
+  root(fitLG$tree,outgroup="Archaea",resolve.root=TRUE)
+
+###Troubles rooting
+
+#plot the UF
+ufbsplot<- 
+  plotBS(root, p = .5, type="p", digits=2, main="Ultrafast BS")
+
+#Assign standard bs values 
+stdbs_tree <- plotBS(fitLG$tree, bs, type = "n")
+
+#plot the STD
+stdbsplot <- 
+  plotBS(root, bs, p = 50, type="p", main="Standard BS")
+
+###### - file manipulation
+# Now from phy to tree: (newick format)
+# write.tree(fitLG$tree, "cox1_ufsb_nwk.tree")
+# 
+# write.tree(stdbs_tree, "cox1_stdbs_nwk.tree")
+######
+
+uf <-   
+  read.tree("cox1_ufsb_nwk.tree")
+
+std <- 
+  read.tree("cox1_stdbs_nwk.tree")
+
+### Step 9. ###
+## Convert data into R Markdown!
+
+
+```
+
