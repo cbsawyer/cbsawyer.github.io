@@ -7,47 +7,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-### Under Construction
-
-```{r}
-
-```
-
-
-## A list of my projects will go here soon!
-
 # Assignments
 ### [Assignment_9](http://cbsawyer.github.io/projects/Assignment_9)
 
 # Exams
 ### [Final Project](http://cbsawyer.github.io/projects/final_project)
 
-Coding stuff: (mpg dataset)
-```{r}
-library(tidyverse)
-library(kableExtra)
-library(plotly)
-
-mpg %>% 
-  kable() %>% 
-  kable_classic(lightable_options = 'hover') %>% 
-  scroll_box(width="500px", height= "200px")
-
-# Well worth learning for table stuff!
-
-p <- mpg %>% 
-  ggplot(aes(x=displ,y=cty)) +
-  geom_point()+
-  geom_smooth()
-
-ggplotly(p)
-
-
-
-```
-
-
-
-
-
+# Notes
+### [Notes](http://cbsawyer.github.io/projects/notes_rmarkdown)
 

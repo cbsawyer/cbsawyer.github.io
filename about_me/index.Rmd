@@ -7,23 +7,22 @@ knitr::opts_chunk$set(echo = FALSE)
 ```
 
 
-### Hi, my name is Caleb Sawyer, and I live in Provo, Utah. 
+### Hi, I'm Caleb Sawyer. 
 
-My favorite things are to cry and pretend I'm sad
+  My favorite things are to cry and pretend I'm sad, cook delicious food, mix cocktails, drink them, and start this cycle over again.
 
-See, I can make **bold test** cause I'm a big kid now.
+  I can be very professional, but I prefer to be dumb and happy instead, with complete disregard of myself. 
+  I laugh loudly, I make terrible jokes, and those two facts themselves are an awful pairing that only begins to dip into the mess that is me.
 
- I can be very professional, but I more prefer to be dumb, and happy instead, with complete disregard of myself. 
- I laugh loudly, I make terrible jokes, and those two facts themselves are an awful pairing that only begins to dip into the mess that I am.
-
-I'm doing the best to pretend that r markdown and knittr isn't just smart-peoples' "MySpace". But my best isn't enough. I'm gonna try and find a way to play music when you navigate to this page. If there is one.
+I'm doing **my best** to pretend that r markdown and knittr for github pages isn't just "MySpace" for nerds. But my best isn't enough. I'm gonna try and find a way to play music when you navigate to this page. Like the good ol' days. RIP MySpace 2008.
 
 
 ```{r}
 knitr::include_graphics("../media/me.jpg")
 ```
 
-
-Here is [My CV](http://cbsawyer.github.io/media/cv.pdf)
-And [My Resume](http://cbsawyer.github.io/media/Resume.pdf)
+***
+### Here is [My CV](http://cbsawyer.github.io/media/cv.pdf)
+***
+### And [My Resume](http://cbsawyer.github.io/media/Resume.pdf)
 

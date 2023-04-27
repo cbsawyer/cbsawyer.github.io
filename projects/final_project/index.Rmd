@@ -2,6 +2,9 @@
 title: "Final Project"
 output:
   html_document:
+    toc: yes
+    toc_float:
+        collapsed: false
     code_folding: hide
 ---
 <body style="background-color:#CDB79E" >
@@ -11,11 +14,13 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 
 ## **Welcome** to the final project page! 
 
+TOCdepth2 check out for headers
+
 **Caleb Sawyer** <br> BIOL-3100 <br> *Introduction to Data Analysis*
 
-This project functions as a walkthrough and/or tutorial for Dr. Heath Ogden's BIOL4550 Molecular Evolution and Bioinformatics class final project, with my data as a reference, using **RStudio**. This is an alternative to using the MEGA 11 software we tinkered around with in class. This reflects my path through the project, and my choice of packages are just an example. There are many other alignment, model testing, phylogenetic tree, and tree viewer tools out there, that all work similarly. There are also important phylogenetic parameters that are not discussed here, but can change depending on your data set, taxa and evolutionary context.
+This project functions as a walkthrough and/or tutorial for Dr. Heath Ogden's BIOL4550 Molecular Evolution and Bioinformatics class final project, with my data as a reference, using **RStudio**. This is an alternative to using the MEGA 11 software we tinkered around with in class. This reflects my path through the project, but there are many other alignment, model testing, phylogenetic tree, and tree viewer tools out there, that all work similarly. There are also important phylogenetic parameters that are not discussed here, but can change depending on your data set, taxa and evolutionary context.
 
-The data set consists of cytochrome C oxidase subunit 1 (Cox1) amino acid sequences pulled from genbank based on the genus of bacterial samples taken from seagrass (*Syringodium isoetifolium*) around **Wallace’s Line**.
+This data set consists of cytochrome C oxidase subunit 1 (Cox1) amino acid sequences pulled from genbank based on the genus of bacterial samples taken from seagrass (*Syringodium isoetifolium*) around **Wallace’s Line**.
 
 ```{r, echo=FALSE}
 knitr::include_graphics("./wallace_line.png")
@@ -59,8 +64,8 @@ newtaxa <- round(runif(10, 1, 254))
 
 ***
 
-### Step 0
-#### Load Packages:
+## Step 0
+### Load Packages:
 
 ```
 library(tidyverse)
@@ -93,8 +98,8 @@ BiocManager::install("msa")
 
 ***
 
-### Step 1 
-#### Read in the data
+## Step 1 
+### Read in the data
 
 ```
 df <- 
@@ -117,8 +122,8 @@ This csv is an excel spreadsheet my group fashioned while collecting sequences, 
 
 ***
 
-### Step 2 
-#### Clean Up the data
+## Step 2 
+### Clean Up the data
 *See code for details* -->
 ```{r, message=FALSE}
 
@@ -197,7 +202,7 @@ knitr::include_graphics("./cox1_all_notepadview.png")
 All sequences are FASTA formatted properly, and can now be aligned!
 
 ***
-## Step 4
+## Step 4: 
 ### Align the Sequences
 Using MSA <br>
 ```{r, eval=FALSE}
@@ -383,8 +388,8 @@ std <-
 
 ```{r}
 
-?ggtree
-?xlim_tree
+# ?ggtree
+# ?xlim_tree
 
 rootuf <- 
   root(uf,outgroup="Archaea",resolve.root=TRUE)
