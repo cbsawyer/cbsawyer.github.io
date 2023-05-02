@@ -12,15 +12,13 @@ output:
 knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message = FALSE)
 ```
 
-## **Welcome** to the final project page! 
-
-TOCdepth2 check out for headers
+## **Welcome** to my final project page! 
 
 **Caleb Sawyer** <br> BIOL-3100 <br> *Introduction to Data Analysis*
 
-This project functions as a walkthrough and/or tutorial for Dr. Heath Ogden's BIOL4550 Molecular Evolution and Bioinformatics class final project, with my data as a reference, using **RStudio**. This is an alternative to using the MEGA 11 software we tinkered around with in class. This reflects my path through the project, but there are many other alignment, model testing, phylogenetic tree, and tree viewer tools out there, that all work similarly. There are also important phylogenetic parameters that are not discussed here, but can change depending on your data set, taxa and evolutionary context.
+This project functions as a walkthrough for performing a bacterial phylogeny with amino acid data as a reference using **RStudio**. This is an alternative to using the MEGA 11 software we tinkered around with in Dr. Ogden's Molecular Evolution and Bioinformatics class. This reflects my path through the project, but there are many other alignment, model testing, phylogenetic tree, and tree viewer tools out there, that all work similarly. There are also important phylogenetic parameters that are not discussed here, but can change depending on your data set, taxa and evolutionary context.
 
-This data set consists of cytochrome C oxidase subunit 1 (Cox1) amino acid sequences pulled from genbank based on the genus of bacterial samples taken from seagrass (*Syringodium isoetifolium*) around **Wallace’s Line**.
+This data set consists of Cytochrome C oxidase subunit 1 (Cox1) amino acid sequences pulled from genbank based on the genus of bacterial samples taken from seagrass (*Syringodium isoetifolium*) around **Wallace’s Line**.
 
 ```{r, echo=FALSE}
 knitr::include_graphics("./wallace_line.png")
@@ -40,13 +38,13 @@ sigtaxa <- as.vector(c(
 "Vibrionimonas","Wandonia","Bauldia","Litorimonas","Anderseniella"))
 ```
 
-```{r}
+```{r,echo=FALSE}
 sigtaxa
 ```
 
 Since the project requires a minimum of 30 taxa, at least 10 more from the 254 samples need to be chosen.
 
-Using a random number generator using a randomly generated seed, we determined the other 10 samples from a list of all the taxa.
+Using a random number generator from a randomly generated seed, we determined the other 10 samples from a list of all the taxa.
 ```
 seed <- round(runif(1, 1, 2147483647))
 ```
@@ -66,6 +64,8 @@ newtaxa <- round(runif(10, 1, 254))
 
 ## Step 0
 ### Load Packages:
+
+R packages are collections of functions that help do work a lot easier. Each individual package helps with different things, and depending on which tools you use, these will change. I would suggest regardless of path starting with **tidyverse**. Full descriptions of each package can be found elsewhere.
 
 ```
 library(tidyverse)
@@ -100,14 +100,10 @@ BiocManager::install("msa")
 
 ## Step 1 
 ### Read in the data
+Read in the csv file so you can work with it. Here, I've used the KableExtra package to make it an easily viewable table.
 
-```
-df <- 
-  read_csv("./taxa_list_new_csv.csv") %>% 
-  clean_names()
-```
 
-```{r,message=FALSE,echo=FALSE} 
+```{r,message=FALSE,echo=TRUE} 
 df <- 
   read_csv("./taxa_list_new_csv.csv") %>% 
   clean_names()
@@ -123,7 +119,17 @@ This csv is an excel spreadsheet my group fashioned while collecting sequences, 
 ***
 
 ## Step 2 
-### Clean Up the data
+### Tidy Up the Data 
+The "data" to work with here needs to be the sequences we are looking to align, and create a phylogeny from. In our case, the source of sequences is an excel spreadsheet with NCBI GenBank accession numbers listed in a column, and the sequence in another. 
+
+*What is "Tidy" data?
+Tidy format is a format that data sets should be in to make it easy to process. There's a set of rules, but essentially it boils down to "one observation per row". Most data people work with in R starts as a hot steamy pile of* **GaRbAgE** *that only makes sense to the idiot who filled out the spreadsheet, with no regard to its use-ability. Read more into it here:
+[R for Data Science 12: Tidy Data](https://r4ds.had.co.nz/tidy-data.html#tidy-data-1)
+[Journal of Statistical Software](https://github.com/gzahn/Data_Course/blob/master/Readings/tidy-data_Wickham.pdf)*
+
+In this case, that idiot is **me**, and the "data" is a spreadsheet of GenBank accession numbers from NCBI, seen above. I've cleaned it up a bit to make it more usable.
+
+
 *See code for details* -->
 ```{r, message=FALSE}
 
@@ -166,16 +172,20 @@ df %>%
   scroll_box(width="900px", height= "350px")
 
 ```
-
+There. Much nicer to look at *and* work with.
 ***
 ## Step 3
 ### FASTA Importing
 
-Use list of GenBank numbers <br>
-Get the compiled AA fasta file:
+Using the list of GenBank numbers from the csv, we need each of their sequences in FASTA format, and compiled together into one file with them all in there. <br>
+The function "get.seq()" from the **bio3d** package does this all for us and saves it as a local file we can read in easily.
+
+Getting the compiled AA fasta file:
 ```{r, eval=FALSE, echo=FALSE}
 
+
 # - file manipulation
+# - Long runtime
 get.seq(df$cox1_genbank,"cox1_all.fasta")
 
 ```
@@ -184,9 +194,10 @@ fst <-
   read.fasta("./cox1_all.fasta")
 
 ```
-
-
 ```
+# - file manipulation
+# - Long runtime
+
 get.seq(df$cox1_genbank,"cox1_all.fasta")
 
 fst <- 
@@ -198,21 +209,23 @@ Viewing the fasta file in Notepad, it should look something like this:
 ```{r, echo=FALSE}
 knitr::include_graphics("./cox1_all_notepadview.png")
 ```
-<br> **Looks good!** <br>
-All sequences are FASTA formatted properly, and can now be aligned!
+<br> <br> **Looks good!** <br>
+All sequences are FASTA formatted properly. Now, they can be aligned.
 
 ***
 ## Step 4: 
 ### Align the Sequences
-Using MSA <br>
-```{r, eval=FALSE}
+Using MSA from the BiocManager package<br>
+
+```{r, eval=FALSE, echo=FALSE}
 # - file manipulation
 seqaln(fst, id=df$taxa_genus, exefile="msa",
-       outfile="align1.fasta", protein=TRUE, seqgroup=FALSE,
+       outfile="align1.fasta", protein=TRUE seqgroup=FALSE, 
        refine=FALSE, verbose=FALSE)
 ```
 ```
 # - file manipulation
+# - Long Runtime
 seqaln(fst, id=df$taxa_genus, exefile="msa",
        outfile="align1.fasta", protein=TRUE, seqgroup=FALSE,
        refine=FALSE, verbose=FALSE)
@@ -220,9 +233,11 @@ seqaln(fst, id=df$taxa_genus, exefile="msa",
 
 File made: "align1.fasta"
 <br>
-Now it's aligned in that fasta 
+"protein" is set to **TRUE** because I'm using amino acid sequences. If you're using nucleotide sequences, simply set it to FALSE.
+
+Now it's aligned in that new fasta file.
 <br>
-Now I need to get it into Phydat format for analysis
+For model testing, we'll need to change it from a fasta format to a phydat format.
 
 ```{r}
 cox1 <- read.phyDat("./align1.fasta",
@@ -237,7 +252,7 @@ class(cox1)
 ## Step 5 <br>
 ### Model test for best fit
 <br>
-Model test to see which model best fits the data to use for phylogeny
+Model test to see which model best fits the data to make the most accurate phylogeny.
 
 
 ```{r, eval=FALSE}
@@ -250,7 +265,7 @@ write.csv(mod,file="model_test_cox1.csv",quote=FALSE,col.names=TRUE)
 ```
 
 ``` 
-# runtime ~ 2 hr
+# - LONG runtime ~ 2 hr
 # - file manipulation
 mod <- modelTest(cox1)
 
@@ -274,9 +289,8 @@ mod %>%
 
 ### Picking a model
 
-I want the model that has the best value for both BIC and AIC overall. <br>
-So I'm going to sum them, divide by 2, and choose the lowest value. <br>
-^ What this dumbass means to say is the minimum average: 
+I want the model that has the best value for both BIC and AIC overall. It's best to look at both values side-by-side like in the table, but I chose to check minimum average of BIC and AIC. 
+
 
 ```{r}
 mod$fit <- ((mod$BIC+mod$AIC)/2)
@@ -288,18 +302,36 @@ c(as.character(mod[mod$fit == min(mod$fit),2]),as.character(min(mod$fit)))
 
 #### Best model: LG+G(4) with a value of "52175"
 
-(Note for me: maybe thinking about making that a cute function)
+
 <br> 
+```{r,eval=FALSE,echo=FALSE}
+# (Note for me: maybe thinking about making that a cute function)
+
+```
 
 ***
 ## Step 7
-###Make the ML tree(s) <br>
--I've got the model to calculate the ML  <br>
--I've got the algined fasta <br>
+### Make the ML tree(s) <br>
 
-...so its time to grow a tree.
+Alright, let's take inventory:
+-Model: LG+G(4)  <br>
+-Alignment: Done. <br>
 
-```{r, eval=FALSE}
+So I've got a file, and I have a model to make a phylogeny with, so its time to grow a tree.
+
+I'm using pml_bb from the **phangorn** package.
+
+```{r, eval=FALSE,echo=FALSE}
+# - Runtime ~ 1 hr 15min
+# - file manipulation
+fitLG <- pml_bb(cox1, model="LG+G(4)")
+
+saveRDS(fitLG, file="fitlg.rds")
+
+
+
+```
+```
 # - Runtime ~ 1 hr 15min
 # - file manipulation
 fitLG <- pml_bb(cox1, model="LG+G(4)")
@@ -307,53 +339,64 @@ fitLG <- pml_bb(cox1, model="LG+G(4)")
 saveRDS(fitLG, file="fitlg.rds")
 
 ```
+File created: "fitlg.rds" <br>
 
-File created: "fitlg.rds"
+First Maximum Likelihood tree built!
 
-First Maximum Likelihood tree generated.
+Let's talk bootstrapping.
+The default option for phangorn is "[UltraFast bootstrapping](https://academic.oup.com/mbe/article/30/5/1188/997508)" (Minh, Nguyen, and Haeseler 2013). Reading into it, it's a reliable method here. However, in class we talk only about standard bootstrapping. For the sake of ease of access, I'm also including the steps for standard bootstrapping here, and comparing the two next to each other:
 
-### Here, there's something I want to look into: bootstrapping.
-
-The default option for pml gen is "[UltraFast bootstrapping](https://academic.oup.com/mbe/article/30/5/1188/997508)" (Minh, Nguyen, and Haeseler 2013), but I only really know the context around standard bootstrapping. So, since I found how to do both, why not compare bootstrap values?
-
-```{r, message=FALSE}
+```{r, echo=FALSE,message=FALSE}
 fitLG <- 
   read_rds("fitlg.rds")
 ```
 Setting up standard bootstrapping:
 <br>
-runtime ~ 1 hr <br>
-- file manipulation<br>
+
 ```
+- Long runtime ~ 1 hr 
+- file manipulation
+
+fitLG <- 
+  read_rds("fitlg.rds")
+  
 bs <- bootstrap.pml(fitLG, bs=100, optNni=TRUE,
                      control = pml.control(trace = 0))
  
 saveRDS(bs, file="bs.rds")
 
 ```
+
+Alright, both are made, and ready to plot!
+
 ***
 ## Step 8
 
-#### Plotting ultrafast BS vs standard BS to compare:
+### Plotting the Trees
+Ultrafast BS vs Standard BS to compare:
 <br>
-First step is ALWAYS: "Root your tree"
+First step is always: Root your tree
 <br>
-In this case: Outgroup = "Archaea"
-<br> <br>
+Here, our outgroup is Archaea
+<br>
 
 Root:
-```{r}
+```{r,echo=FALSE}
 bs <- 
   read_rds("bs.rds")
 
 root <- 
   root(fitLG$tree,outgroup="Archaea",resolve.root=TRUE)
 ```
+```
+bs <- 
+  read_rds("bs.rds")
 
-Troubles rooting. Need to figure that out...
-
-### Plot:
-```{r}
+root <- 
+  root(fitLG$tree,outgroup="Archaea",resolve.root=TRUE)
+```
+#### Plot:
+```{r,echo=FALSE}
 #Ultrafast Bootstrapping
 ufbsplot<- 
   plotBS(root, p = .5, type="p", digits=2, main="Ultrafast BS")
@@ -366,40 +409,68 @@ stdbsplot <-
   plotBS(root, bs, p = 50, type="p", main="Standard BS")
 ```
 
-##### Convert from Phy to Newick format (or tree)
-
-- file manipulation
 ```
+#Ultrafast Bootstrapping
+ufbsplot<- 
+  plotBS(root, p = .5, type="p", digits=2, main="Ultrafast BS")
+
+#Assign standard bs values 
+stdbs_tree <- plotBS(fitLG$tree, bs, type = "n")
+
+#Standard Bootstrapping
+stdbsplot <- 
+  plotBS(root, bs, p = 50, type="p", main="Standard BS")
+```
+
+Well, it's UGLY. But let's save it to a newick format so we can play around with it in a tree viewer
+
+Convert from Phy to Newick format
+
+
+```
+- file manipulation
 Now from phy to tree: (newick format)
 write.tree(fitLG$tree, "cox1_ufsb_nwk.tree")
 
 write.tree(stdbs_tree, "cox1_stdbs_nwk.tree")
 ```
-```{r,message=FALSE}
+
+***
+## Step 9
+### Tree Viewing
+
+So we have a tree. I'm using ggtree to view the tree and make it look less of a mess.
+
+Read in the newick trees:
+```{r,echo=FALSE,message=FALSE}
 uf <-   
   read.tree("cox1_ufsb_nwk.tree")
 
 std <- 
   read.tree("cox1_stdbs_nwk.tree")
 ```
-***
-## Step 9
-### Tree Viewing
+```
+uf <-   
+  read.tree("cox1_ufsb_nwk.tree")
 
-```{r}
-
-# ?ggtree
-# ?xlim_tree
-
+std <- 
+  read.tree("cox1_stdbs_nwk.tree")
+```
+Root the tree
+```{r,echo=FALSE}
 rootuf <- 
   root(uf,outgroup="Archaea",resolve.root=TRUE)
 
-class(uf)
-class(rootuf)
+# class(uf)
+# class(rootuf)
+# is.rooted(rootuf)
+```
+```
+rootuf <- 
+  root(uf,outgroup="Archaea",resolve.root=TRUE)
+```
 
-is.rooted(rootuf)
-
-ggtree(uf)
+```{r}
 
 ggtree(rootuf, layout="rectangular", branch.length = "none")+
   geom_tiplab(size=3.3)+
@@ -409,19 +480,28 @@ ggtree(rootuf, layout="rectangular", branch.length = "none")+
              vjust=1,
              size=3.3)
 
-# p <- p + geom_text(aes(label = bootstrap), hjust = 1, vjust = -0.4, size = 3) + geom_nodelab(aes(label = nodesupport)) # specify your node label here, looks like BP
-
-#uf
-
 ```
 
+**Looks GREAT!!!**
 
+We've got a tree built with visible bootstrap values, no name cut-offs, properly rooted, clean as a whistle.
+There are many more customizeable options within ggtree--play around until you like it.
 ***
 
 ## Step 10
-### Double check
+### Save Your Tree
 
-If it's gotten this far, looks like it worked!
+simply using ggsave() saves the tree you most recently created as a .png.
+```{r,echo=FALSE,eval=FALSE}
+# - File manipulation
+ggsave("uf_ml_tree.png")
+```
+
+```
+# - File manipulation
+ggsave("uf_ml_tree.png")
+```
+
 
 ***
 References:
